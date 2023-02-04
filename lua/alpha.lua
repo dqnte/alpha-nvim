@@ -602,8 +602,12 @@ function alpha.start(on_vimenter, conf)
             buffer = vim.api.nvim_create_buf(false, true)
             vim.api.nvim_win_set_buf(window, buffer)
         else
-            buffer = vim.api.nvim_get_current_buf()
-            vim.api.nvim_buf_delete(buffer, {})
+            -- try to go to previous buffer before closing
+            local ok, _ = pcall(vim.cmd, "b#")
+            if not ok then
+                buffer = vim.api.nvim_get_current_buf()
+                vim.api.nvim_buf_delete(buffer, {})
+            end
             return
         end
     end
